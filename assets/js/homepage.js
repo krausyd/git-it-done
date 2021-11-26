@@ -13,6 +13,17 @@ const getFeaturedRepos = function(language) {
     });
 };
 
+const buttonClickHandler = function(event) {
+    const language = event.target.getAttribute("data-language");
+    if (language) {
+        getFeaturedRepos(language);
+
+        // clear old content
+        repoContainerEl.textContent = "";
+    }
+
+}
+
 const displayRepos = function(repos, searchTerm) {
     // clear old content
     repoContainerEl.textContent = "";
@@ -95,5 +106,7 @@ let userFormEl = document.querySelector("#user-form");
 let nameInputEl = document.querySelector("#username");
 let repoContainerEl = document.querySelector("#repos-container");
 let repoSearchTerm = document.querySelector("#repo-search-term");
+let languageButtonsEl = document.querySelector("#language-buttons");
 
 userFormEl.addEventListener("submit", formSubmitHandler);
+languageButtonsEl.addEventListener("click", buttonClickHandler);
