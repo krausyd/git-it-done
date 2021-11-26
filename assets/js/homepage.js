@@ -1,3 +1,18 @@
+const getFeaturedRepos = function(language) {
+    const apiUrl = "https://api.github.com/search/repositories?q=" + language + "+is:featured&sort=help-wanted-issues";
+
+    fetch(apiUrl)
+        .then(function(response) {
+            if (response.ok) {
+                response.json().then(function(data) {
+                    displayRepos(data.items, language);
+                });
+            } else {
+                alert('Error: GitHub User Not Found');
+            }
+    });
+};
+
 const displayRepos = function(repos, searchTerm) {
     // clear old content
     repoContainerEl.textContent = "";
