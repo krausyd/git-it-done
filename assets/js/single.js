@@ -4,22 +4,22 @@ const displayIssues = function(issues) {
         return;
     }
 
-    for (var i = 0; i < issues.length; i++) {
+    for (let i = 0; i < issues.length; i++) {
         // create a link element to take users to the issue on github
-        var issueEl = document.createElement("a");
+        let issueEl = document.createElement("a");
         issueEl.classList = "list-item flex-row justify-space-between align-center";
         issueEl.setAttribute("href", issues[i].html_url);
         issueEl.setAttribute("target", "_blank");
 
         // create span to hold issue title
-        var titleEl = document.createElement("span");
+        let titleEl = document.createElement("span");
         titleEl.textContent = issues[i].title;
 
         // append to container
         issueEl.appendChild(titleEl);
 
         // create a type element
-        var typeEl = document.createElement("span");
+        let typeEl = document.createElement("span");
 
         // check if issue is an actual issue or a pull request
         if (issues[i].pull_request) {
@@ -38,7 +38,7 @@ const displayIssues = function(issues) {
 const displayWarning = function(repo) {
     // add text to warning container
     limitWarningEl.textContent = "To see more than 30 issues, visit ";
-    var linkEl = document.createElement("a");
+    let linkEl = document.createElement("a");
     linkEl.textContent = "See More Issues on GitHub.com";
     linkEl.setAttribute("href", "https://github.com/" + repo + "/issues");
     linkEl.setAttribute("target", "_blank");
@@ -47,7 +47,19 @@ const displayWarning = function(repo) {
     limitWarningEl.appendChild(linkEl);
 };
 
-const getRepoIssues = function(repo) {
+const getRepoName = function() {
+    const queryString = document.location.search;
+    const repoName = queryString.split("=")[1];
+    repoNameEl.textContent = repoName;
+    return repoName;
+}
+
+const getRepoIssues = function() {
+    const repo = getRepoName();
+    if (!repo) {
+        alert("You need to provide a repo name to query its issues.");
+        document.location.replace("index.html");
+    }
     const apiUrl = "https://api.github.com/repos/" + repo + "/issues?direction=asc";
     fetch(apiUrl)
         .then(function(response) {
@@ -61,14 +73,15 @@ const getRepoIssues = function(repo) {
                         displayWarning(repo);
                     }
                 });
-            }
-            else {
-                alert("There was a problem with your request!");
+            } else {
+                // if not successful, redirect to homepage
+                document.location.replace("./index.html");
             }
         });
 };
 
-getRepoIssues("facebook/react");
-
 let issueContainerEl = document.querySelector("#issues-container");
 let limitWarningEl = document.querySelector("#limit-warning");
+let repoNameEl = document.querySelector("#repo-name");
+
+getRepoIssues();
